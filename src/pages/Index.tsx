@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 const Index = () => {
   const { toast } = useToast();
@@ -23,9 +24,10 @@ const Index = () => {
     hearAboutEvent: "",
     questions: "",
     dietaryPreference: "",
+    otherDietaryDetail: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -42,6 +44,16 @@ const Index = () => {
       toast({
         title: "Missing required fields",
         description: "Please fill in all required fields marked with *",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Additional validation for "Others" dietary preference
+    if (formData.dietaryPreference === "others" && !formData.otherDietaryDetail) {
+      toast({
+        title: "Missing information",
+        description: "Please specify your dietary requirements",
         variant: "destructive",
       });
       return;
@@ -258,7 +270,7 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Dietary Preferences - Removed radio buttons */}
+                {/* Dietary Preferences */}
                 <div>
                   <Label className="text-base font-medium block mb-2">
                     Please select your child's dietary preferences
@@ -310,6 +322,23 @@ const Index = () => {
                       Others
                     </button>
                   </div>
+                  
+                  {/* Input field for "Others" option */}
+                  {formData.dietaryPreference === "others" && (
+                    <div className="mt-3">
+                      <Label htmlFor="otherDietaryDetail" className="text-sm font-medium">
+                        Please specify dietary requirements <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        id="otherDietaryDetail"
+                        name="otherDietaryDetail"
+                        value={formData.otherDietaryDetail}
+                        onChange={handleChange}
+                        className="mt-1"
+                        placeholder="Please specify your dietary requirements"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
